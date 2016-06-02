@@ -5,6 +5,7 @@
 > 2. Config加入重构方法，便于配置动态修改。
 > 3. 修复Config和ClassSearcher中文和空格路径问题。
 > 4. 加入PathUtils。
+> 4. 加入Tuple。
 
 ## 2016-05-29
 > 1. 升级为3.2
