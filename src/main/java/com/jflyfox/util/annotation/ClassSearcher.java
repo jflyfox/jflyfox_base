@@ -20,14 +20,14 @@ package com.jflyfox.util.annotation;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import com.jflyfox.util.PathUtils;
 
 /**
  * 类扫描：借鉴Jfinal ext
@@ -40,32 +40,19 @@ public class ClassSearcher {
 	static String lib = new File(classPathUrl.getFile()).getParent() + "/lib/";
 
 	public static <T> List<Class<? extends T>> findInClasspathAndJars(Class<T> clazz, List<String> includeJars) {
-		List<String> classFileList = null;
-		try {
-			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");;
-			String findLib = URLDecoder.decode(lib, "UTF-8");
-			file = file.replaceAll("\\\\", "/");
-			findLib = findLib.replaceAll("\\\\", "/");
-			classFileList = findFiles(file, "*.class");
-			classFileList.addAll(findjarFiles(findLib, includeJars));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		String path = PathUtils.rebuild(classPathUrl.getFile());
+		List<String> classFileList = findFiles(path, "*.class");
+		String libPath = PathUtils.rebuild(lib);
+		classFileList.addAll(findjarFiles(libPath, includeJars));
 		return extraction(clazz, classFileList);
 	}
-	
+
 	public static <T> List<Class<? extends T>> findInClasspath(Class<T> clazz) {
-		List<String> classFileList = null;
-		try {
-			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");
-			file = file.replaceAll("\\\\", "/");
-			classFileList = findFiles(file, "*.class");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		String file = PathUtils.rebuild(classPathUrl.getFile());
+		List<String> classFileList = findFiles(file, "*.class");
 		return extraction(clazz, classFileList);
 	}
-	
+
 	/**
 	 * 递归查找文件
 	 * 
@@ -84,7 +71,7 @@ public class ClassSearcher {
 		// 判断目录是否存在
 		File baseDir = new File(baseDirName);
 		if (!baseDir.exists() || !baseDir.isDirectory()) {
-			System.err.println("search error：" + baseDirName + "is not a dir！");
+			System.err.println("search error：" + baseDirName + " is not a dir！");
 		} else {
 			String[] filelist = baseDir.list();
 			for (int i = 0; i < filelist.length; i++) {
@@ -95,13 +82,14 @@ public class ClassSearcher {
 					tempName = readfile.getName();
 					if (ClassSearcher.wildcardMatch(targetFileName, tempName)) {
 						String classname = "";
-						String tem = readfile.getAbsoluteFile().toString().replaceAll("\\\\", "/");
+						String tem = readfile.getAbsoluteFile().toString();
+						tem = PathUtils.rebuild(tem);
 						String[] rootClassPath = new String[] { //
-								"/classes" // java web
+						"/classes" // java web
 								, "/test-classes" // maven test
 								, "/bin" // java project
 						};
-						
+
 						// scan class，set root path
 						for (int j = 0; j < rootClassPath.length; j++) {
 							String tmp = rootClassPath[j];
@@ -110,7 +98,7 @@ public class ClassSearcher {
 								break;
 							}
 						}
-						
+
 						if (classname.startsWith("/")) {
 							classname = classname.substring(classname.indexOf("/") + 1);
 						}
@@ -139,7 +127,7 @@ public class ClassSearcher {
 			// 判断目录是否存在
 			File baseDir = new File(baseDirName);
 			if (!baseDir.exists() || !baseDir.isDirectory()) {
-				System.out.println("####warn####file serach error：" + baseDirName + "is not a dir！");
+				System.out.println("####warn####file serach error：" + baseDirName + " is not a dir！");
 			} else {
 				String[] filelist = baseDir.list(new FilenameFilter() {
 					public boolean accept(File dir, String name) {
@@ -187,7 +175,7 @@ public class ClassSearcher {
 	}
 
 	private static String className(String classFile, String pre) {
-		String objStr = classFile.replaceAll("\\\\", "/");
+		String objStr = PathUtils.rebuild(classFile);
 		return objStr.replaceAll("/", ".");
 	}
 

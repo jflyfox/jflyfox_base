@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -102,12 +101,7 @@ public class Config {
 	
 	private static void setConfigMap() {
 		String filePath = classPath + configPath;
-		try {
-			filePath = URLDecoder.decode(filePath, "UTF-8");
-			filePath = filePath.replaceAll("\\\\", "/");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		filePath = PathUtils.rebuild(filePath);
 		List<String> list = findFiles(filePath);
 		
 		Map<String, String> tmpConfigMap = new HashMap<String, String>();
