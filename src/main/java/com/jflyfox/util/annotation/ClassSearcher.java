@@ -20,7 +20,9 @@ package com.jflyfox.util.annotation;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -37,6 +39,30 @@ public class ClassSearcher {
 	static URL classPathUrl = ClassSearcher.class.getResource("/");
 	static String lib = new File(classPathUrl.getFile()).getParent() + "/lib/";
 
+	public static <T> List<Class<? extends T>> findInClasspathAndJars(Class<T> clazz, List<String> includeJars) {
+		List<String> classFileList = null;
+		try {
+			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");;
+			String findLib = URLDecoder.decode(lib, "UTF-8");
+			classFileList = findFiles(file, "*.class");
+			classFileList.addAll(findjarFiles(findLib, includeJars));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return extraction(clazz, classFileList);
+	}
+	
+	public static <T> List<Class<? extends T>> findInClasspath(Class<T> clazz) {
+		List<String> classFileList = null;
+		try {
+			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");;
+			classFileList = findFiles(file, "*.class");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return extraction(clazz, classFileList);
+	}
+	
 	/**
 	 * 递归查找文件
 	 * 
@@ -67,14 +93,21 @@ public class ClassSearcher {
 					if (ClassSearcher.wildcardMatch(targetFileName, tempName)) {
 						String classname = "";
 						String tem = readfile.getAbsoluteFile().toString().replaceAll("\\\\", "/");
-						if (tem.indexOf("/classes") >= 0) {
-							classname = tem.substring(tem.indexOf("/classes") + "/classes".length(),
-									tem.indexOf(".class"));
+						String[] rootClassPath = new String[] { //
+								"/classes" // java web
+								, "/test-classes" // maven test
+								, "/bin" // java project
+						};
+						
+						// scan class，set root path
+						for (int j = 0; j < rootClassPath.length; j++) {
+							String tmp = rootClassPath[j];
+							if (tem.indexOf(tmp) >= 0) {
+								classname = tem.substring(tem.indexOf(tmp) + tmp.length(), tem.indexOf(".class"));
+								break;
+							}
 						}
-						if (tem.indexOf("/test-classes") >= 0) {
-							classname = tem.substring(tem.indexOf("/test-classes") + "/test-classes".length(),
-									tem.indexOf(".class"));
-						}
+						
 						if (classname.startsWith("/")) {
 							classname = classname.substring(classname.indexOf("/") + 1);
 						}
@@ -130,12 +163,6 @@ public class ClassSearcher {
 		}
 		return classFiles;
 
-	}
-
-	public static <T> List<Class<? extends T>> findInClasspathAndJars(Class<T> clazz, List<String> includeJars) {
-		List<String> classFileList = findFiles(classPathUrl.getFile(), "*.class");
-		classFileList.addAll(findjarFiles(lib, includeJars));
-		return extraction(clazz, classFileList);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -203,8 +230,4 @@ public class ClassSearcher {
 		return strIndex == strLength;
 	}
 
-	public static <T> List<Class<? extends T>> findInClasspath(Class<T> clazz) {
-		List<String> classFileList = findFiles(classPathUrl.getFile(), "*.class");
-		return extraction(clazz, classFileList);
-	}
 }

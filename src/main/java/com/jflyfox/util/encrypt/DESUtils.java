@@ -88,7 +88,7 @@ public class DESUtils {
 			bytes = cipher.doFinal(bytes);
 			return new String(bytes);
 		} catch (Exception e) {
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 	}
 	
