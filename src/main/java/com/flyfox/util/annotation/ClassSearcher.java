@@ -65,9 +65,16 @@ public class ClassSearcher {
 				} else {
 					tempName = readfile.getName();
 					if (ClassSearcher.wildcardMatch(targetFileName, tempName)) {
-						String classname;
+						String classname = "";
 						String tem = readfile.getAbsoluteFile().toString().replaceAll("\\\\", "/");
-						classname = tem.substring(tem.indexOf("/classes") + "/classes".length(), tem.indexOf(".class"));
+						if (tem.indexOf("/classes") >= 0) {
+							classname = tem.substring(tem.indexOf("/classes") + "/classes".length(),
+									tem.indexOf(".class"));
+						}
+						if (tem.indexOf("/test-classes") >= 0) {
+							classname = tem.substring(tem.indexOf("/test-classes") + "/test-classes".length(),
+									tem.indexOf(".class"));
+						}
 						if (classname.startsWith("/")) {
 							classname = classname.substring(classname.indexOf("/") + 1);
 						}
