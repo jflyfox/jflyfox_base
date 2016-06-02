@@ -20,7 +20,9 @@ package com.jflyfox.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,18 +35,12 @@ public class Config {
 	private final static URL classPathUrl = Config.class.getResource("/");
 	private final static String classPath = new File(classPathUrl.getFile()).getPath();
 	private static String configPath = "/conf/";
-	private final static Map<String, String> configMap = new HashMap<String, String>();
+	private static Map<String, String> configMap = new HashMap<String, String>();
 
 	static {
 		setConfigMap();
 	}
-
-	public static void test() {
-		for (String key : configMap.keySet()) {
-			System.out.println(key + "=" + configMap.get(key));
-		}
-	}
-
+	
 	public static String getStr(String key) {
 		if (configMap.size() < 0) {
 			return null;
@@ -76,9 +72,45 @@ public class Config {
 		}
 	}
 
+	
+	/**
+	 * 修改目录，配置重构
+	 * 
+	 * 2016年6月2日 下午3:27:29
+	 * flyfox 330627517@qq.com
+	 * @param configPath
+	 */
+	public static void rebuild(String configPath){
+		Config.configPath = configPath;
+		rebuild();
+	}
+	
+	/**
+	 * 配置重构
+	 * 
+	 * 2016年6月2日 下午3:27:13
+	 * flyfox 330627517@qq.com
+	 */
+	public static void rebuild(){
+		setConfigMap();
+	}
+
+	public static void test() {
+		for (String key : configMap.keySet()) {
+			System.out.println(key + "=" + configMap.get(key));
+		}
+	}
+	
 	private static void setConfigMap() {
 		String filePath = classPath + configPath;
+		try {
+			filePath = URLDecoder.decode(filePath, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		List<String> list = findFiles(filePath);
+		
+		Map<String, String> tmpConfigMap = new HashMap<String, String>();
 		for (String configName : list) {
 			Properties props = getProperties(filePath + configName);
 			Iterator<Entry<Object, Object>> it = props.entrySet().iterator();
@@ -86,13 +118,15 @@ public class Config {
 				Entry<Object, Object> entry = it.next();
 				String key = String.valueOf(entry.getKey());
 				String value = String.valueOf(entry.getValue());
-				if (!configMap.containsKey(key)) {
-					configMap.put(key, value);
+				if (!tmpConfigMap.containsKey(key)) {
+					tmpConfigMap.put(key, value);
 				} else {
 					System.err.println("CONFIG EEOR:key(" + key + ") is exist;");
 				}
 			}
 		}
+		
+		Config.configMap = tmpConfigMap;
 	}
 
 	/**

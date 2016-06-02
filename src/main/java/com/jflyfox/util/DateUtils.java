@@ -19,6 +19,7 @@ package com.jflyfox.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,28 @@ import java.util.regex.Pattern;
  * flyfox 330627517@qq.com
  */
 public class DateUtils {
+	
+	public static final int SECOND = 1;
+	public static final int MINUTE_SECOND = 60 * SECOND;
+	public static final int HOUR_SECOND = 60 * MINUTE_SECOND;
+	public static final int DAY_SECOND = 24 * HOUR_SECOND;
+	public static final int WEEK_SECOND = 7 * DAY_SECOND;
+
+	/** 日期格式：yyyy-MM-dd HH:mm:ss.SSS */
+	public static final String YMD_HMSSS = "yyyy-MM-dd HH:mm:ss.SSS";
+	/** 日期格式：yyyyMMddHHmmssSSS */
+	public static final String YMDHMSSS = "yyyyMMddHHmmssSSS";
+	/** 日期格式：yyyy-MM-dd HH:mm:ss */
+	public static final String YMD_HMS = "yyyy-MM-dd HH:mm:ss";
+	/** 日期格式：yyyy-MM-dd HH:mm */
+	public static final String YMD_HM = "yyyy-MM-dd HH:mm";
+	/** 日期格式：yyyyMMddHHmmss */
+	public static final String YMDHMS = "yyyyMMddHHmmss";
+	/** 日期格式：yyyy-MM-dd */
+	public static final String YMD = "yyyy-MM-dd";
+	/** 时间格式：HH:mm:ss */
+	public static final String HMS = "HH:mm:ss";
+	
 	/**
 	 * 默认的日期格式 .
 	 */
@@ -229,6 +252,36 @@ public class DateUtils {
 	 */
 	public static String getNow(String regex) {
 		return format(getNowDate(), regex);
+	}
+	
+	/***
+	 * 获取指定时间所在天的开始时间
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String getCurrenDayBeginTime(Date date) {
+		Calendar ca = Calendar.getInstance();
+		ca.setTime(date);
+		ca.set(Calendar.HOUR_OF_DAY, 0);
+		ca.set(Calendar.MINUTE, 0);
+		ca.set(Calendar.SECOND, 0);
+		return format(ca.getTime(), "yyyy-MM-dd HH:mm:ss");
+	}
+
+	/***
+	 * 获取指定时间所在天的结束时间
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String getCurrenDayEndTime(Date date) {
+		Calendar ca = Calendar.getInstance();
+		ca.setTime(date);
+		ca.set(Calendar.HOUR_OF_DAY, 23);
+		ca.set(Calendar.MINUTE, 59);
+		ca.set(Calendar.SECOND, 59);
+		return format(ca.getTime(), "yyyy-MM-dd HH:mm:ss");
 	}
 
 }
