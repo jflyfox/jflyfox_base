@@ -44,6 +44,8 @@ public class ClassSearcher {
 		try {
 			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");;
 			String findLib = URLDecoder.decode(lib, "UTF-8");
+			file = file.replaceAll("\\\\", "/");
+			findLib = findLib.replaceAll("\\\\", "/");
 			classFileList = findFiles(file, "*.class");
 			classFileList.addAll(findjarFiles(findLib, includeJars));
 		} catch (UnsupportedEncodingException e) {
@@ -55,7 +57,8 @@ public class ClassSearcher {
 	public static <T> List<Class<? extends T>> findInClasspath(Class<T> clazz) {
 		List<String> classFileList = null;
 		try {
-			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");;
+			String file =  URLDecoder.decode(classPathUrl.getFile(), "UTF-8");
+			file = file.replaceAll("\\\\", "/");
 			classFileList = findFiles(file, "*.class");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

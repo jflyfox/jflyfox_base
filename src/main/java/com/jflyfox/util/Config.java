@@ -20,7 +20,6 @@ package com.jflyfox.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -105,7 +104,8 @@ public class Config {
 		String filePath = classPath + configPath;
 		try {
 			filePath = URLDecoder.decode(filePath, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
+			filePath = filePath.replaceAll("\\\\", "/");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		List<String> list = findFiles(filePath);
@@ -160,7 +160,7 @@ public class Config {
 		// 判断目录是否存在
 		File baseDir = new File(baseDirName);
 		if (!baseDir.exists() || !baseDir.isDirectory()) {
-			System.err.println("search error：" + baseDirName + "is not a dir！");
+			System.err.println("search error：" + baseDirName + " is not a dir！");
 		} else {
 			String[] filelist = baseDir.list();
 			for (String fileName : filelist) {
