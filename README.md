@@ -3,6 +3,7 @@ common tools,StrUtils,NumberUtils,DateUtils etc.
 
 # Author
 georgefox ([@georgefox](https://github.com/jflyfox))<br/>
+mail: georgefox2016@hotmail.com
 
 # support
 * alipay QR code
