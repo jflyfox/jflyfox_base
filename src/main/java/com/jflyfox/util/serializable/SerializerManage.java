@@ -23,16 +23,43 @@ import java.util.Map;
 public class SerializerManage {
 
 	private static final Map<String, Serializer> map = new HashMap<String, Serializer>();
+	private static String DEFAULT_KEY = null;
 
 	static {
-		map.put("java", new JavaSerializer());
+		JavaSerializer javaSerializer = new JavaSerializer();
+		add(javaSerializer);
+		DEFAULT_KEY = javaSerializer.name();
 	}
 
+	public static void setDefaultKey(String defaultKey) {
+		DEFAULT_KEY = defaultKey;
+	}
+	
+	/**
+	 * V3.1以前版本兼容
+	 * 
+	 * 2017年1月18日 下午2:38:00
+	 * flyfox 330627517@qq.com
+	 * @param key
+	 * @param serializer
+	 */
 	public static void add(String key, Serializer serializer) {
 		map.put(key, serializer);
+	}
+	
+	public static void add(Serializer serializer) {
+		map.put(serializer.name(), serializer);
 	}
 
 	public static Serializer get(String key) {
 		return map.get(key);
+	}
+
+	public static byte[] serialize(Object obj) throws Exception {
+		return get(DEFAULT_KEY).serialize(obj);
+	}
+
+	public static Object deserialize(byte[] bytes) throws Exception {
+		return get(DEFAULT_KEY).deserialize(bytes);
 	}
 }
