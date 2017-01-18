@@ -54,12 +54,16 @@ public class SerializerManage {
 	public static Serializer get(String key) {
 		return map.get(key);
 	}
+	
+	public static Serializer getDefault() {
+		return map.get(DEFAULT_KEY);
+	}
 
 	public static byte[] serialize(Object obj) throws Exception {
-		return get(DEFAULT_KEY).serialize(obj);
+		return getDefault().serialize(obj);
 	}
 
 	public static Object deserialize(byte[] bytes) throws Exception {
-		return get(DEFAULT_KEY).deserialize(bytes);
+		return getDefault().deserialize(bytes);
 	}
 }
