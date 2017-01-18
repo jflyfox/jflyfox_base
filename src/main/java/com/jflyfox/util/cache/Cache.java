@@ -17,7 +17,8 @@
 
 package com.jflyfox.util.cache;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
 public interface Cache {
 
@@ -79,13 +80,22 @@ public interface Cache {
 	 * @return
 	 */
 	public int size();
-
+	
 	/**
-	 * 返回缓存列表
+	 * 返回数据key列表
+	 * 
+	 * 2017年1月18日 下午4:24:01
+	 * flyfox 330627517@qq.com
+	 * @return
+	 */
+	public Set<String> keys();
+	
+	/**
+	 * 返回数据缓存列表
 	 * 
 	 * 2015年4月26日 下午8:33:11 flyfox 330627517@qq.com
 	 * 
 	 * @return
 	 */
-	public <T> List<T> list();
+	public <T> Collection<T> values();
 }

@@ -18,8 +18,9 @@
 package com.jflyfox.util.cache.impl;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jflyfox.util.cache.Cache;
@@ -68,16 +69,24 @@ public class MemoryCache implements Cache {
 		return map.size();
 	}
 
+	public Set<String> keys() {
+		if (map.size() == 0) {
+			return null;
+		}
+		return map.keySet();
+	}
+
 	@SuppressWarnings("unchecked")
-	public <T> List<T> list() {
+	public <T> Collection<T> values() {
 		if (map.size() == 0) {
 			return null;
 		}
 
-		List<T> list = new ArrayList<T>();
+		Collection<T> list = new ArrayList<T>();
 		for (Object obj : map.values()) {
 			list.add((T) obj);
 		}
+
 		return list;
 	}
 
