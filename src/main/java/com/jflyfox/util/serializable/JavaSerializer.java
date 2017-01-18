@@ -25,6 +25,10 @@ import java.io.ObjectOutputStream;
 
 public class JavaSerializer implements Serializer {
 
+	public String name(){
+		return "java";
+	}
+	
 	public byte[] serialize(Object obj) throws IOException {
 		ObjectOutputStream oos = null;
 		try {
