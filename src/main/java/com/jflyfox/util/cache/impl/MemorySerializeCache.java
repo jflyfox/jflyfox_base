@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.jflyfox.util.cache.Cache;
 import com.jflyfox.util.serializable.Serializer;
+import com.jflyfox.util.serializable.SerializerManage;
 
 /**
  * 内存序列化
@@ -38,6 +39,10 @@ public class MemorySerializeCache implements Cache {
 	protected Serializer serializer;
 	protected String name;
 	protected Map<String, byte[]> map = new ConcurrentHashMap<String, byte[]>();
+
+	public MemorySerializeCache() {
+		this.serializer = SerializerManage.getDefault();
+	}
 
 	public MemorySerializeCache(Serializer serializer) {
 		this.serializer = serializer;
@@ -78,11 +83,11 @@ public class MemorySerializeCache implements Cache {
 	public Object remove(String key) {
 		return map.remove(key);
 	}
-	
+
 	public void clear() {
 		map.clear();
 	}
-	
+
 	public int size() {
 		return map.size();
 	}

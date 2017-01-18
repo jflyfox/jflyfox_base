@@ -40,7 +40,7 @@ public class CacheManager {
 	static {
 		_CreateCache = new ICacheManager() {
 			public Cache getCache() {
-				return new MemorySerializeCache(SerializerManage.get("java"));
+				return new MemorySerializeCache(SerializerManage.getDefault());
 			}
 		};
 	}
