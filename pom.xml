@@ -5,7 +5,7 @@
 	<artifactId>jflyfox_base</artifactId>
 	<version>3.2</version>
 	<packaging>jar</packaging>
-	<name>jflyfox</name>
+	<name>jflyfox_base</name>
 	<description>jflyfox base tools</description>
 	<url>https://github.com/jflyfox/jflyfox_base</url>
 
